@@ -13,6 +13,7 @@ function PostBox() {
     const { data: session } = useSession()
     const [addPost] = useMutation(ADD_POST)
     const [addSubreddit] = useMutation(ADD_SUBREDDIT)
+    console.log('session =>',session)
     type FormData = {
         postTitle: string
         postBody: string

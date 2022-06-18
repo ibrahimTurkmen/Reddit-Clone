@@ -13,19 +13,30 @@ type Comment {
 
 type Post {
   body: String
-  commentList: [Comment] @materializer(query: "getCommentUsingPost_id")
   created_at: DateTime
   id: ID!
   image: String
-  subreddit: Subreddit
-    @materializer(
-      query: "getSubreddit"
-      arguments: [{ name: "id", field: "subreddit_id" }]
-    )
   subreddit_id: ID
   title: String
   username: String
-  voteList: [Vote] @materializer(query: "getVoteUsingPost_id")
+
+  comments: [Comment]
+    @materializer(
+      query: "getCommentByPostId"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
+  votes: [Vote]
+    @materializer(
+      query: "getVotesByPostId"
+      arguments: [{ name: "post_id", field: "id" }]
+    )
+  subreddit: Subreddit
+    @materializer(
+      query: "getSubredditListById"
+      arguments: [{ name: "id", field: "subreddit_id" }]
+    )
+
+  # voteList: [Vote] @materializer(query: "getVoteUsingPost_id")
 }
 
 type Subreddit {
@@ -59,6 +70,38 @@ type Query {
       table: "comment"
       configuration: "postgresql_config"
     )
+
+  getCommentByPostId(post_id: ID!): [Comment]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      select * from "comment" where "post_id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+
+  getVotesByPostId(id: ID!): [Vote]
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      select * from "vote" where "post_id" = $1
+      order by "created_at" desc
+      """
+      configuration: "postgresql_config"
+    )
+
+  getSubredditListById(id: ID!): Subreddit
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      select * from "subreddit" where "id" = $1
+      """
+      configuration: "postgresql_config"
+    )
+
   getComment(id: ID!): Comment
     @dbquery(
       type: "postgresql"
@@ -107,7 +150,7 @@ type Query {
       table: "subreddit"
       configuration: "postgresql_config"
     )
-    getSubredditListByTopic(topic: String!): [Subreddit]
+  getSubredditListByTopic(topic: String!): [Subreddit]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -196,7 +239,7 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertSubreddit( topic: String!): Subreddit
+  insertSubreddit(topic: String!): Subreddit
     @dbquery(
       type: "postgresql"
       schema: "public"

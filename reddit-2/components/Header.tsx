@@ -59,7 +59,7 @@ function Header() {
                     <div className='flex-shrink-0'>
                         <UserIcon className='icon' />
                     </div>
-                    <p className='text-gray-500 px-2'>Sign In</p>
+                    <p className='text-gray-500 px-2' onClick={()=> signIn()}>Sign In</p>
                 </div>
             )}
 
