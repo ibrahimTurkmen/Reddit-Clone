@@ -6,12 +6,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from '@apollo/client';
 import { ADD_POST, ADD_SUBREDDIT } from '../graphql/mutations';
 import client from '../apollo-client';
-import { GET_SUBREDDIT_BY_TOPIC } from '../graphql/queries';
+import { GET_ALL_POSTS, GET_SUBREDDIT_BY_TOPIC } from '../graphql/queries';
 import toast from 'react-hot-toast';
 
 function PostBox() {
     const { data: session } = useSession()
-    const [addPost] = useMutation(ADD_POST)
+    const [addPost] = useMutation(ADD_POST, {
+        refetchQueries: [GET_ALL_POSTS,'getPostList']
+    })
     const [addSubreddit] = useMutation(ADD_SUBREDDIT)
     console.log('session =>',session)
     type FormData = {

@@ -30,7 +30,7 @@ type Post {
       query: "getVotesByPostId"
       arguments: [{ name: "post_id", field: "id" }]
     )
-  subreddit: Subreddit
+  subreddit: [Subreddit]
     @materializer(
       query: "getSubredditListById"
       arguments: [{ name: "id", field: "subreddit_id" }]
@@ -92,7 +92,7 @@ type Query {
       configuration: "postgresql_config"
     )
 
-  getSubredditListById(id: ID!): Subreddit
+  getSubredditListById(id: ID!): [Subreddit]
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -112,8 +112,11 @@ type Query {
   getPostList: [Post]
     @dbquery(
       type: "postgresql"
-      schema: "public"
-      table: "post"
+
+      query: """
+      select * from "post"
+      order by "post"."created_at" desc
+      """
       configuration: "postgresql_config"
     )
   getPost(id: ID!): Post

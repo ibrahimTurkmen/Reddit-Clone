@@ -11,7 +11,11 @@ function Avatar({ seed, large }: Props) {
 
     return (
         <div className={`relative overflow-hidden h-10 w-10 rounded-full broder-gray-300 bg-white ${large && 'h-20 w-20'}`}>
-            <Image src={`https://avatars.dicebear.com/api/open-peeps/${session?.user?.name || 'placeholder'}.svg`} layout="fill" />
+            {seed ?
+                <Image src={`https://avatars.dicebear.com/api/open-peeps/${seed}.svg`} layout="fill" />
+                : <Image src={`https://avatars.dicebear.com/api/open-peeps/${session?.user?.name || 'placeholder'}.svg`} layout="fill" />
+
+            }
         </div>
     )
 }
